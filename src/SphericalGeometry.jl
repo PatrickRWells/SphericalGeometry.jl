@@ -50,6 +50,7 @@ include("distances.jl")
 include("points.jl")
 include("operations.jl")
 include("area.jl")
+include("polygons.jl")
 end
 
 #TODO Check https://spacetelescope.github.io/spherical_geometry/index.html for additional functions

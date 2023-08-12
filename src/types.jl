@@ -1,5 +1,7 @@
 export Point, Arc, Line, Arcs, Polygon, issimple, iscomplex, boundingbox,
-isconcave, isconvex, convexhull
+isconcave, isconvex, convexhull, box
+
+import IterTools
 
 """
     Point(ϕ::Float64, λ::Float64)
@@ -80,6 +82,33 @@ struct Polygon{T<:Float64}
         end
     end
 end
+
+
+
+"""
+Create a polygon out of min/max latitude and longitude values
+"""
+
+function box(ϕ₁::Float64, λ₁::Float64, ϕ₂::Float64, λ₂::Float64)
+    interior = Point((ϕ₁ + ϕ₂) / 2.0, (λ₁ + λ₂) / 2.0)
+    points = [Point(ϕ₁, λ₁), Point(ϕ₁, λ₂), Point(ϕ₂, λ₂), Point(ϕ₂, λ₁)]
+    return Polygon(interior, points)
+end
+
+
+"""
+Return the great circle arcs defining the polygon
+"""
+
+function arcs(polygon::Polygon)
+    arcs = Vector{Arc{Float64}}()
+    for (p1, p2) in IterTools.partition(polygon.points, 2, 1)
+        push!(arcs, Arc(p1, p2))
+    end
+    return arcs
+end
+
+
 
 """
     Polygon(inside_point::Point, arcs::Arcs)
